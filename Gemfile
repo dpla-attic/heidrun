@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'rails', '4.1.6'
 
-gem 'krikri', github: 'dpla/krikri', branch: 'feature/rspec'
+gem 'krikri', github: 'dpla/krikri', branch: 'develop'
 gem 'marmottawrapper', '~>0.0.5'
 
 gem 'sqlite3'
