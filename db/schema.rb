@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141119184653) do
+ActiveRecord::Schema.define(version: 20150106200736) do
 
   create_table "bookmarks", force: true do |t|
     t.integer  "user_id",       null: false
@@ -25,14 +25,32 @@ ActiveRecord::Schema.define(version: 20141119184653) do
 
   add_index "bookmarks", ["user_id"], name: "index_bookmarks_on_user_id"
 
-  create_table "krikri_acls", force: true do |t|
-    t.integer  "user_id"
-    t.integer  "flags",      default: 0
+  create_table "krikri_activities", force: true do |t|
+    t.datetime "start_time"
+    t.datetime "end_time"
+    t.string   "agent"
+    t.string   "opts"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "krikri_acls", ["user_id"], name: "index_krikri_acls_on_user_id"
+  create_table "krikri_harvest_sources", force: true do |t|
+    t.integer  "institution_id"
+    t.string   "name"
+    t.string   "source_type"
+    t.string   "metadata_schema"
+    t.string   "uri"
+    t.text     "notes"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "krikri_institutions", force: true do |t|
+    t.string   "name"
+    t.text     "notes"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "searches", force: true do |t|
     t.text     "query_params"
@@ -55,8 +73,6 @@ ActiveRecord::Schema.define(version: 20141119184653) do
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true
