@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'rails', '4.1.6'
 
-gem 'krikri', github: 'dpla/krikri', branch: 'fix-jettywrapper-in-host'
+gem 'krikri', github: 'dpla/krikri', branch: 'develop'
 
 gem 'sqlite3'
 gem 'sass-rails', '~> 4.0.3'
