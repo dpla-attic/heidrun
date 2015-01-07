@@ -3,7 +3,6 @@ source 'https://rubygems.org'
 gem 'rails', '4.1.6'
 
 gem 'krikri', github: 'dpla/krikri', branch: 'develop'
-gem 'marmottawrapper', '~>0.0.5'
 
 gem 'sqlite3'
 gem 'sass-rails', '~> 4.0.3'
@@ -34,6 +33,6 @@ group :development, :test do
   gem 'pry-rails'
 end
 
-# Devise is used for authentication by KriKri and Blacklight.
-gem 'devise', '~>3.4.1'
-
+gem "factory_girl_rails", "~> 4.4.0", group: :development
+gem "jettywrapper", "~> 1.8.3", group: :development
+gem "devise", "~> 3.4.1"
