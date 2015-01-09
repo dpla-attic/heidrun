@@ -19,14 +19,12 @@ gem 'jquery-ui-rails'
 group :development do
   gem 'spring'
   gem 'guard', '~>1.0'
-  gem 'guard-rspec', '~>3.0'
-  # KriKri uses Factory Girl to generate sample data
-  gem 'factory_girl_rails', '~>4.4.0'
+  gem 'guard-rspec'
 end
 
 group :development, :test do
-  gem 'rspec-core', '~>2.14.7'
-  gem 'rspec-rails', '~>2.14.0'
+  gem 'rspec-core', '~>3.1'
+  gem 'rspec-rails', '~>3.1'
   gem 'pry'
   gem 'pry-doc'
   gem 'pry-byebug'
