@@ -43,6 +43,7 @@ ActiveRecord::Schema.define(version: 20150106200736) do
     t.text     "notes"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "opts"
   end
 
   create_table "krikri_institutions", force: true do |t|

@@ -4,7 +4,7 @@ describe 'mappings' do
   let(:record) { build(:oai_dc_record) }
 
   describe '#map' do
-    it 'has registerd mappings' do
+    it 'has registered mappings' do
       expect(Krikri::Mapper::Registry.keys).not_to be_empty
     end
 
