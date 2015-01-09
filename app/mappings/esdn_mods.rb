@@ -1,4 +1,4 @@
 Krikri::Mapper.define(:esdn_mods) do
-  aggregatedCHO :class => DPLA::MAP::SourceResource do
+  sourceResource :class => DPLA::MAP::SourceResource do
   end
 end
