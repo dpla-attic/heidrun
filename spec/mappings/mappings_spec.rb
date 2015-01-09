@@ -1,15 +1,16 @@
 require 'spec_helper'
 
-module Heidrun
-  describe Mappings do
-    include ::Heidrun::Mappings
+describe 'mappings' do
+  let(:record) { build(:oai_dc_record) }
 
-    let(:record) { build(:oai_dc_record) }
+  describe '#map' do
+    it 'has registerd mappings' do
+      expect(Krikri::Mapper::Registry.keys).not_to be_empty
+    end
 
-    describe '#map' do
-      it 'creates a DPLA::MAP record' do
-        expect(subject.map(record)).to be_a DPLA::MAP::Aggregation
-      end
+    it 'creates a DPLA::MAP record', krikri_integration: true do
+      expect(Krikri::Mapper.map(Krikri::Mapper::Registry.keys.first, record))
+        .to contain_exactly(an_instance_of(DPLA::MAP::Aggregation))
     end
   end
 end
