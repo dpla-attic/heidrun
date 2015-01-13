@@ -22,6 +22,10 @@ group :development do
   gem 'guard-rspec'
 end
 
+group :test do
+  gem "codeclimate-test-reporter", require: false
+end
+
 group :development, :test do
   gem 'rspec-core', '~>3.1'
   gem 'rspec-rails', '~>3.1'
