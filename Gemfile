@@ -36,7 +36,7 @@ group :development, :test do
 end
 
 gem "factory_girl_rails", "~> 4.4.0", group: :development
-gem "jettywrapper", "~> 1.8.3", group: :development
+gem "jettywrapper", "~> 2.0", group: :development
 gem "devise", "~> 3.4.1"
 gem 'pg', '<2.0.0'
 gem 'unicorn', '~> 4.8.3'
