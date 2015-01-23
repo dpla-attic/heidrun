@@ -1,0 +1,5 @@
+---
+
+redis:
+    db: 1
+    namespace: heidrun_prod

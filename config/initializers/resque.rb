@@ -1,0 +1,2 @@
+
+Resque.redis = $redis
