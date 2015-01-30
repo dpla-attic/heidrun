@@ -1,0 +1,8 @@
+---
+
+# Defaults.
+# Override per https://github.com/railsconfig/rails_config#common-config-file
+
+redis:
+    host: localhost
+    port: 6379

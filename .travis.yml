@@ -1,0 +1,11 @@
+language: ruby
+bundler_args: --without debug
+script: "bundle exec rake ci"
+rvm:
+  - 2.1.3
+sudo: false
+services:
+  - redis-server
+addons:
+  code_climate:
+    repo_token: 62a83766ff231b1463ac35e2d2fe856dc36d9dba30441ed1f82eaeaf05bc0854

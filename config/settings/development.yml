@@ -1,0 +1,5 @@
+---
+
+redis:
+    db: 0
+    namespace: heidrun_dev
