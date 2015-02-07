@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'mappings' do
-  let(:record) { build(:oai_dc_record) }
+  let(:record) { build(:heidrun_oai_dc_record) }
 
   describe '#map' do
     it 'has registered mappings' do
