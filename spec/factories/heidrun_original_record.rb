@@ -1,3 +1,4 @@
+# coding: utf-8
 FactoryGirl.define do
 
   factory :heidrun_original_record, class: Krikri::OriginalRecord do
@@ -5,7 +6,7 @@ FactoryGirl.define do
     initialize_with { new('abc') }
   end
 
-  factory :oai_dc_record, parent: :heidrun_original_record do
+  factory :heidrun_oai_dc_record, parent: :heidrun_original_record do
     content <<-EOS
 <?xml version="1.0" encoding="UTF-8"?>
 

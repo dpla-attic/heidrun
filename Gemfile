@@ -1,8 +1,8 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.1.6'
+gem 'rails', '4.1.9'
 
-gem 'krikri', '~>0.1.0'
+gem 'krikri', '~>0.1.3'
 
 gem 'sqlite3'
 gem 'sass-rails', '~> 4.0.3'
@@ -41,5 +41,3 @@ gem "devise", "~> 3.4.1"
 gem 'pg', '<2.0.0'
 gem 'unicorn', '~> 4.8.3'
 gem 'rails_config'
-
-gem "pry-rails", group: :development
