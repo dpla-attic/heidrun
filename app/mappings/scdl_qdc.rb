@@ -1,4 +1,4 @@
-Krikri::Mapper.define(:scdl_qdc) do
+Krikri::Mapper.define(:scdl_qdc, :parser => Krikri::QdcParser, :parser_args => '//qdc:qualifieddc') do
   provider :class => DPLA::MAP::Agent do
     uri 'http://dp.la/api/contributor/scdl'
     label 'South Carolina Digital Library'
