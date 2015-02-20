@@ -1,1 +1,1 @@
-Dir[Rails.root.join('app/mappings/**/*.rb')].each { |f| require f }
+Dir[Rails.root.join('vendor/mappings/**/*.rb')].each { |f| require f }
