@@ -1,7 +1,7 @@
-v0.2.0 - 2015 Feb 23
+v0.2.1 - 2015 Feb 23
 ---
 
-* Update to krikri 0.2.0
+* Update to krikri 0.2.1
 * Allow `require`-ing of vendored mappings to traverse symlinks
 * Add vendored mapping structure
 
