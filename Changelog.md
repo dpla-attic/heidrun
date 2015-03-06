@@ -1,3 +1,7 @@
+v0.2.2 - 2015 Mar 6
+---
+* Update to Krikri 0.3.x
+
 v0.2.1 - 2015 Feb 23
 ---
 
