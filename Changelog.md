@@ -1,3 +1,8 @@
+v0.3.0 - 2015 Mar 10
+---
+* Note: this release requires running `rake db:migrate` on deployment
+* Update to Krikri 0.3.3
+
 v0.2.2 - 2015 Mar 6
 ---
 * Update to Krikri 0.3.x
