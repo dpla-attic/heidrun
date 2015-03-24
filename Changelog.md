@@ -1,3 +1,8 @@
+v0.3.1 - 2015 Mar 10
+---
+* Add MDL Harvester
+* Update to Krikri 0.4.0
+
 v0.3.0 - 2015 Mar 10
 ---
 * Note: this release requires running `rake db:migrate` on deployment
