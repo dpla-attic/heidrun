@@ -1,3 +1,10 @@
+v0.4.0 - 2015 Apr 3
+---
+* Note: this release requires running `rake db:migrate` on deployment
+* Note: you will need to reindex your data in your Solr index after deployment
+* Update to Krikri 0.5.0
+* Update to Rails 4.1.10
+
 v0.3.1 - 2015 Mar 10
 ---
 * Add MDL Harvester
