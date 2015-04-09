@@ -1,3 +1,7 @@
+v0.4.6 - 2015 Apr 9 
+---
+* Update to Krikri 0.5.4
+
 v0.4.5 - 2015 Apr 6 
 ---
 * Block robots and add some default text at app root
