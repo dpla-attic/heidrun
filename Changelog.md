@@ -1,3 +1,7 @@
+v0.4.9 - 2015 Apr 12
+---
+* Update to Krikri 0.5.7
+
 v0.4.8 - 2015 Apr 12
 ---
 * Update to Krikri 0.5.6
