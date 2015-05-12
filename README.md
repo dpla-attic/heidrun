@@ -17,6 +17,47 @@ Run these commands:
     bundle install
     bundle exec rake db:migrate
 
+
+
+Using Vagrant for Development
+-----------------------------
+
+Prerequisites:
+
+* [VirtualBox](https://www.virtualbox.org/) (Version 4.3)
+* [Vagrant](http://www.vagrantup.com/) (Version 1.6)
+* [vagrant-vbguest](https://github.com/dotless-de/vagrant-vbguest/) (`vagrant plugin install vagrant-vbguest`)
+* [Ansible](http://www.ansible.com/) (Version 1.7 or greater; [installation instructions](http://docs.ansible.com/intro_installation.html))
+
+
+Add this line to your `/etc/hosts` or equivalent:
+
+    192.168.50.21   heidrun
+
+Then do this:
+
+    $ cd /path/to/this/directory
+    $ vagrant up
+    $ vagrant reload  # Because of o/s packages having been upgraded
+    $ vagrant ssh
+    $ cd /vagrant
+    $ bundle exec rake jetty:start
+    $ bundle exec rake db:migrate
+    $ bundle exec rails s
+
+You should be able to browse to `http://heidrun:3000/` to see the application.
+
+You may re-run the provisioning with `vagrant provision`.
+
+To run tests, make sure jetty is not already running, and then run `rake ci`:
+
+    $ bundle exec rake jetty:stop
+    $ bundle exec rake ci
+
+Please see [the notes in our automation project README](https://github.com/dpla/automation/blob/develop/README-ingestion2.md#when-to-use-this-and-other-dpla-project-vms)
+regarding the use of this VM.
+
+
 About the name
 --------------
 
