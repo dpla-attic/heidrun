@@ -19,3 +19,7 @@ Gemfile.lock
 
 jetty
 vendor/mappings
+
+# Ignore Vagrant metadata directory
+/.vagrant
+
