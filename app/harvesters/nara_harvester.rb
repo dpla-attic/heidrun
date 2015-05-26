@@ -31,11 +31,11 @@ class NaraHarvester < Krikri::Harvesters::ApiHarvester
   # - name:       See Krikri::Harvester#initialize.  Defaults to "nara"
   # - batchsize:  The number of records to fetch with each API request.
   #               Defaults to 10.
-  # - id_fname:   The file name of the Heidrun::IDSource that drives the
-  #               harvest and governs which records to fetch.  Defaults to
+  # - id_source_filename:  The file name of the Heidrun::IDSource that drives
+  #               the harvest and governs which records to fetch.  Defaults to
   #               /var/tmp/nara_ids.
-  # - id_fh:      A filehandle to use with Heidrun::IDSource, mostly useful for
-  #               automated testing or console usage.  Optional.
+  # - id_source_fh:  A filehandle to use with Heidrun::IDSource, mostly useful
+  #               for automated testing or console usage.  Optional.
   #
   # For other parameters, see Krikri::Harvester#initialize.  
   #
