@@ -1,3 +1,10 @@
+v0.5.0 - 2015 Jun 8
+---
+* Add development VM
+* Add NARA harvester
+* Bump Krikri version to 0.6.0
+* Update Solr files with changes from Krikri 0.6.0
+
 v0.4.9 - 2015 Apr 12
 ---
 * Update to Krikri 0.5.7
