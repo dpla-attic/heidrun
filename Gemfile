@@ -5,7 +5,7 @@ gem 'rails', '4.1.10'
 gem 'krikri', '0.6.0'
 
 gem 'sqlite3'
-gem 'sass-rails', '~> 5.0.0'
+gem 'sass-rails', '~> 4.0.3'
 
 # Gems used only for assets; not required by rails
 # in production environments.
