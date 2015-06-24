@@ -1,3 +1,7 @@
+v0.5.1 - 2015 Jun 24
+---
+* Bump up sass-rails version to fix deployment error
+
 v0.5.0 - 2015 Jun 8
 ---
 * Add development VM
