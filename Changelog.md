@@ -1,3 +1,8 @@
+v0.5.2 - 2015 Jun 24
+---
+* Upgrade to Krikri 0.7.0 and Rails 4.1.11
+* Revert "Bump up sass-rails version to fix deployment error"
+
 v0.5.1 - 2015 Jun 24
 ---
 * Bump up sass-rails version to fix deployment error
