@@ -1,3 +1,7 @@
+v0.5.3 - 2015 Jul 01
+---
+* Tighten direct gem dependencies; allow Krikri ~> 0.7
+	
 v0.5.2 - 2015 Jun 24
 ---
 * Upgrade to Krikri 0.7.0 and Rails 4.1.11
