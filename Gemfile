@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'rails', '4.1.11'
 
-gem 'krikri', '0.7.0'
+gem 'krikri', '~> 0.7'
 
 gem 'sqlite3'
 gem 'sass-rails', '~> 4.0.3'
@@ -37,7 +37,6 @@ end
 
 gem "factory_girl_rails", "~> 4.4.0", group: :development
 gem "jettywrapper", "~> 2.0", group: :development
-gem "devise", "~> 3.4.1"
-gem 'pg', '<2.0.0'
-gem 'unicorn', '~> 4.8.3'
-gem 'rails_config'
+gem "devise", '3.4.1'
+gem 'pg', '0.18.2'
+gem 'unicorn', '4.8.3'
