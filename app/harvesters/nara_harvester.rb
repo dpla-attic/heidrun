@@ -101,7 +101,8 @@ class NaraHarvester < Krikri::Harvesters::ApiHarvester
             en.yield doc
           end
         rescue RestClient::RequestFailed => e
-          log :error, "request failed with params #{request_opts['params']}"
+          msg = "request failed with params #{request_opts['params']}"
+          Krikri::Logger.log(:error, msg)
           next
         end
       end

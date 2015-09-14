@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'rails', '4.1.11'
 
-gem 'krikri', '~> 0.7'
+gem 'krikri', '~> 0.8', '>=0.8.3'
 
 gem 'sqlite3'
 gem 'sass-rails', '~> 4.0.3'
