@@ -1,3 +1,10 @@
+v0.6.0 - 2015 Nov 23
+---
+* Fix NaraHarvester logging
+* Add enrichment for removing "placeholder" values
+* Add Heidrun::MappingTools
+* Upgrade Krikri to 0.9
+
 v0.5.3 - 2015 Jul 01
 ---
 * Tighten direct gem dependencies; allow Krikri ~> 0.7

@@ -8,6 +8,7 @@ require 'rspec/rails'
 
 require 'factory_girl_rails'
 require 'dpla/map/factories'
+require 'audumbla/spec/enrichment'
 require 'rdf/marmotta'
 
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
