@@ -4,5 +4,6 @@ module Heidrun
   #
   module MappingTools
     require_relative 'mapping_tools/marc'
+    require_relative 'mapping_tools/file'
   end
 end
