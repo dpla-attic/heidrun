@@ -1,3 +1,8 @@
+v0.7.0 - 2015 Nov 24
+---
+* Add new file mapping tool
+* Upgrade Krikri to 0.10.0
+
 v0.6.0 - 2015 Nov 23
 ---
 * Fix NaraHarvester logging
