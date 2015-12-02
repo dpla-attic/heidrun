@@ -206,7 +206,7 @@ class NyplHarvester < Krikri::Harvesters::ApiHarvester
   # @return [Array<String>] A list of collection UUIDs eligible for harvest
   #
   def list_collections
-    match_collection = opts.fetch(:match_collection, /.*/)
+    match_collection = opts[:match_collection] || /.*/
 
     response = request('/items/roots')
     response.xpath('//nyplAPI/response/uuids/uuid')
