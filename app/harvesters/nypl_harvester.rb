@@ -136,7 +136,7 @@ class NyplHarvester < Krikri::Harvesters::ApiHarvester
       mods_record = request(item_uri + '.xml')
       {
         identifier: capture_record.xpath('./uuid').text,
-        item_record: mods_record.xpath('//nyplAPI/response/mods'),
+        item_record: mods_record.xpath('//nyplAPI/response/mods')[0],
         capture_record: capture_record
       }
     end
@@ -159,7 +159,9 @@ class NyplHarvester < Krikri::Harvesters::ApiHarvester
     mods_record = doc.fetch(:item_record)
     capture_record = doc.fetch(:capture_record)
 
-    mods_record.xpath('//mods')[0]
+    mods_record.add_namespace('mods', 'http://www.loc.gov/mods/v3')
+
+    mods_record
       .add_child('<extension />')[0]
       .add_child(capture_record)
 
