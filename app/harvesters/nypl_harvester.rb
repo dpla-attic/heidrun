@@ -154,16 +154,16 @@ class NyplHarvester < Krikri::Harvesters::ApiHarvester
   #
   def get_content(doc)
     # Since we really need to work with two records here (the item record and
-    # the capture record), we combine both into a single original record.
-    result = Nokogiri::XML('<record><item_record /><capture_record /></record>')
+    # the capture record), we combine both into a single original record.  Use
+    # the mods `extension` element for this.
+    mods_record = doc.fetch(:item_record)
+    capture_record = doc.fetch(:capture_record)
 
-    result.xpath('//record/item_record')[0]
-      .add_child(doc.fetch(:item_record))
+    mods_record.xpath('//mods')[0]
+      .add_child('<extension />')[0]
+      .add_child(capture_record)
 
-    result.xpath('//record/capture_record')[0]
-      .add_child(doc.fetch(:capture_record))
-
-    result.to_xml
+    mods_record.to_xml
   end
 
   ##
