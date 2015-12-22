@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.1.11'
+gem 'rails', '~> 4.1.11'
 
 gem 'krikri', '~> 0.10', '>=0.10.0'
 
@@ -33,6 +33,7 @@ group :development, :test do
   gem 'pry-doc'
   gem 'pry-byebug'
   gem 'pry-rails'
+  gem 'webmock', :require => false
 end
 
 gem "factory_girl_rails", "~> 4.4.0", group: :development

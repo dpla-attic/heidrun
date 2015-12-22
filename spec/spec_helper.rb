@@ -10,6 +10,9 @@ require 'factory_girl_rails'
 require 'dpla/map/factories'
 require 'audumbla/spec/enrichment'
 require 'rdf/marmotta'
+require 'webmock/rspec'
+
+WebMock.allow_net_connect!
 
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 
@@ -36,5 +39,13 @@ RSpec.configure do |config|
 
   config.after(:suite) do
     clear_repository
+  end
+
+  config.before(:each) do |example|
+    if example.metadata[:webmock]
+      WebMock.disable_net_connect!
+    else
+      WebMock.allow_net_connect!
+    end
   end
 end
