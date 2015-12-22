@@ -1,3 +1,8 @@
+v0.7.1 - 2015 Dec 22
+---
+* Implement the Hathi harvester
+* Relax Rails dependency to the 4.1.x series
+
 v0.7.0 - 2015 Nov 24
 ---
 * Add new file mapping tool
