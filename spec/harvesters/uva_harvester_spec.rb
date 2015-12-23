@@ -53,7 +53,7 @@ describe UVAHarvester, :webmock => true do
     EOS
   end
 
-  let (:record1_mods) do
+  let(:record1_mods) do
     <<-EOS
     <mods xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xmlns:mods="http://www.loc.gov/mods/v3"
@@ -66,7 +66,7 @@ describe UVAHarvester, :webmock => true do
     EOS
   end
 
-  let (:record2_mods) do
+  let(:record2_mods) do
     <<-EOS
     <mods xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xmlns:mods="http://www.loc.gov/mods/v3"
@@ -81,7 +81,7 @@ describe UVAHarvester, :webmock => true do
 
   subject do
     opts = { uri: base_url }
-    Krikri::Harvesters::FedoraHarvester.new(opts)
+    UVAHarvester.new(opts)
   end
 
   before(:each) do

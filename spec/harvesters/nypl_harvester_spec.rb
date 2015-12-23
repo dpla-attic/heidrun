@@ -102,7 +102,7 @@ describe NyplHarvester do
 
   subject do
     opts = { uri: base_url, nypl: { apikey: 'notrealkey' } }
-    Krikri::Harvesters::NyplHarvester.new(opts)
+    NyplHarvester.new(opts)
   end
 
   before(:each) do
