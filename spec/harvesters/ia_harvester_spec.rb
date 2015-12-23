@@ -90,7 +90,7 @@ describe IaHarvester, :webmock => true do
     EOS
   end
 
-  let (:marc_response) do
+  let(:marc_response) do
     <<-EOS
 <?xml version="1.0" encoding="UTF-8"?>
 <record xmlns="http://www.loc.gov/MARC21/slim">
@@ -107,8 +107,9 @@ describe IaHarvester, :webmock => true do
   end
 
   subject do
-    opts = { uri: base_search_url, ia: {threads: 2} }
-    Krikri::Harvesters::IaHarvester.new(opts)
+    opts = { uri: base_search_url,
+             ia: { threads: 2 } }
+    IaHarvester.new(opts)
   end
 
   before(:each) do
@@ -116,6 +117,13 @@ describe IaHarvester, :webmock => true do
       .to_return(status: 200, body: search_page_1_response, headers: {})
     stub_request(:get, search_page_2_url)
       .to_return(status: 200, body: search_page_2_response, headers: {})
+
+    %w(id1 id2 id3 id4).each do |id|
+      stub_request(:get, "#{base_download_url}/#{id}/#{id}_files.xml")
+        .to_return(status: 200,
+                   body: '<files>files</files>',
+                   headers: {})
+    end
 
     %w(id1 id2 id3 id4).each do |id|
       stub_request(:get, "#{base_download_url}/#{id}/#{id}_meta.xml")
@@ -155,6 +163,10 @@ describe IaHarvester, :webmock => true do
     it 'includes marc data when available' do
       expect(doc.xpath('//metadata/marc/record/datafield/subfield')[0].text)
         .to eq('123456789')
+    end
+
+    it 'includes file data when available' do
+      expect(doc.xpath('//metadata/files')[0].text).to eq('files')
     end
 
     it 'fetches all documents' do
