@@ -87,15 +87,19 @@ class IaHarvester
   # @return [Array] an array of @record_class instances
   def enumerate_records(identifiers)
     batch = []
+    # get meta.xml for each identifier in the batch
     identifiers.each do |id|
       meta_uri = "#{DOWNLOAD_BASE_URI}/#{id}/#{id}_meta.xml"
 
-      batch << { :meta_request => @http.add_request(uri: URI.parse(meta_uri)),
-                 :id => id }
+      batch << { meta_request: @http.add_request(uri: URI.parse(meta_uri)),
+                 id: id }
     end
 
+    # wait for the requests to complete so we don't hit the server
+    # harder than intended
     batch.each { |r| r[:meta_request].join }
 
+    # parse meta.xml and send requests for corresponding files.xml
     batch.each do |record|
       record[:meta_request].with_response do |response|
         unless response.status == 200
@@ -104,14 +108,33 @@ class IaHarvester
           next
         end
         record[:meta] = Nokogiri::XML(response.body)
+        files = "#{DOWNLOAD_BASE_URI}/#{record[:id]}/#{record[:id]}_files.xml"
+        record[:files_request] = @http.add_request(uri: URI.parse(files))
+      end
+    end
+
+    # remove any items from the batch that didn't have a meta.xml
+    batch.select! { |r| r[:meta] }
+
+    batch.each { |r| r[:files_request].join }
+
+    # parse files.xml, attach it to meta.xml and send requests for marc.xml
+    batch.each do |record|
+      record[:files_request].with_response do |response|
+        if response.status == 200
+          files = Nokogiri::XML(response.body)
+          save_with_opt = Nokogiri::XML::Node::SaveOptions::NO_DECLARATION
+          record[:meta].child
+            .add_child(files.to_xml(save_with: save_with_opt))
+        end
         marc = "#{DOWNLOAD_BASE_URI}/#{record[:id]}/#{record[:id]}_marc.xml"
         record[:marc_request] = @http.add_request(uri: URI.parse(marc))
       end
     end
 
-    batch.select! { |r| r[:meta] }
     batch.each { |r| r[:marc_request].join }
 
+    # parse marc.xml and attach it, then build records
     batch.lazy.map do |record|
       record[:marc_request].with_response do |response|
         if response.status == 200
