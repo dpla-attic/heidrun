@@ -17,7 +17,7 @@ class NyplHarvester
   # @example
   #    Typical instantiation, good for most cases:
   #
-  #        Krikri::Harvesters::NyplHarvester.new(nypl: { apikey: '[key]' })
+  #        NyplHarvester.new(nypl: { apikey: '[key]' })
   #
   # Parameters to 'opts':
   #

@@ -1,7 +1,7 @@
 ##
-# A harvester implementation for Fedora 3
+# A harvester implementation for UVA
 #
-class FedoraHarvester
+class UVAHarvester
   include Krikri::Harvester
 
   DEFAULT_THREAD_COUNT = 10
@@ -15,20 +15,20 @@ class FedoraHarvester
   # @example
   #    Typical instantiation, good for most cases:
   #
-  #      Krikri::Harvesters::FedoraHarvester.new(uri: 'http://example.edu/fedora/...')
+  #      UVAHarvester.new(uri: 'http://example.edu/fedora/...')
   #
-  # Accepts options passed as `:fedora => opts`
+  # Accepts options passed as `:uva => opts`
   #
   # Options allowed are:
   #
   #   - threads:     The number of records to fetch asynchronously
   #                  in a batch (default: 10)
-  #   - name:        See Krikri::Harvester#initialize.  Defaults to "fedora"
+  #   - name:        See Krikri::Harvester#initialize.  Defaults to "uva"
   #   - max_records: The maximum number of records to harvest
   #                  0 means no limit (default 0)
   #
   def initialize(opts = {})
-    @opts = opts.fetch(:fedora, {})
+    @opts = opts.fetch(:uva, {})
     super
 
     @opts[:threads] ||= DEFAULT_THREAD_COUNT
@@ -41,7 +41,7 @@ class FedoraHarvester
   # @see Krikri::Harvester.expected_opts
   def self.expected_opts
     {
-      key: :fedora,
+      key: :uva,
       opts: {
         threads:  { type: :integer, required: false },
         max_records:  { type: :integer, required: false }
