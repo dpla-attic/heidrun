@@ -19,7 +19,7 @@ class IaHarvester
   # @example
   #    Typical instantiation, good for most cases:
   #
-  #      Krikri::Harvesters::IaHarvester.new(uri: 'http://archive.org/...')
+  #      IaHarvester.new(uri: 'http://archive.org/...')
   #
   # Accepts options passed as `:ia => opts`
   #
@@ -145,7 +145,6 @@ class IaHarvester
           record[:meta].child.add_child('<marc />')[0]
             .add_child(marc.to_xml(save_with: save_with_opt))
         end
-
         @record_class.build(mint_id(record[:id]), record[:meta].to_xml)
       end
     end
