@@ -116,10 +116,25 @@ describe NaraHarvester do
         it 'logs the exception and moves on to the next request' do
           all_records = []
           expect(Rails.logger).to receive(:error)
-            .with("request failed with params #{params_1['params']}")
+            .with(include(params_1['params'].to_s))
           subject.send(:enumerate_records).each {|r| all_records << r }
           # failed request had 2 records, successful one had 1
           expect(all_records.count).to eq 1
+        end
+      end
+
+      context 'when encountering bad JSON error' do
+        before do
+          allow(subject).to receive(:request).with(params_1)
+            .and_raise(JSON::ParserError)
+        end
+        
+        it 'logs the exception and retries' do
+          expect(subject).to receive(:sleep).exactly(5).times
+          expect(Rails.logger).to receive(:error)
+            .with(include(params_1['params'].to_s))
+          # failed request had 2 records, successful one had 1
+          expect(subject.send(:enumerate_records).to_a.count).to eq 1
         end
       end
     end

@@ -81,27 +81,44 @@ class NaraHarvester < Krikri::Harvesters::ApiHarvester
   ##
   # @see Krikri::ApiHarvester#enumerate_records
   #
-  # TODO:
-  # Per the note above in #initialize, when there is no longer an @id_source to
-  # drive the harvest, the query options above might want to be amended to pull
-  # only those records with "Unrestricted" or "Restricted - Possibly" statuses.
-  # We might need to add the following to @opts['params'] in three iterations,
-  # where item_type is one of "item", "itemAv", or "fileUnit":
-  #      "description.#{item_type}.useRestriction.status.termName" =>
-  #        'Unrestricted or "Restricted - Possibly"'
+  # @todo: Per the note above in `#initialize`, when there is no longer an
+  # `@id_source` to drive the harvest, the query options above might want to be
+  # amended to pull only those records with "Unrestricted" or "Restricted - 
+  # Possibly" statuses. We might need to add the following to @opts['params'] 
+  # in three iterations, where item_type is one of "item", "itemAv", or 
+  # "fileUnit":
+  #     "description.#{item_type}.useRestriction.status.termName" =>
+  #       'Unrestricted or "Restricted - Possibly"'
+  #
   def enumerate_records
     Enumerator.new do |en|
       request_opts = opts.deep_dup
       @id_source.batches.each do |ids|
         request_opts['params']['naIds'] = ids.join(',')
+        retried = 0
         begin
           docs = get_docs(request(request_opts.dup))
           break if docs.empty?
-          docs.each do |doc|
-            en.yield doc
-          end
+
+          docs.each { |doc| en.yield doc }
+
         rescue RestClient::RequestFailed => e
-          msg = "request failed with params #{request_opts['params']}"
+          msg = "Request failed with params #{request_opts['params']}\n" \
+                "#{e.message}"
+          Krikri::Logger.log(:error, msg)
+          next
+        rescue JSON::ParserError => e
+          # Rescuing invalid JSON. The NARA API occasionally delivers bad 
+          # batches. The problem seems to be intermittent and short-lived, so
+          # we try again. Give up after 5 tries, log, and skip the batch.
+          unless retried >= 5
+            retried += 1
+            sleep 5
+            retry 
+          end
+
+          msg = "JSON Parser failed on #{request_opts['params']}\n" \
+                "#{e.message}"
           Krikri::Logger.log(:error, msg)
           next
         end
