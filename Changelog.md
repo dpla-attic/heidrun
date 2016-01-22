@@ -1,3 +1,7 @@
+v0.7.2 - 2016 Jan 22
+---
+* Add logging and retries for invalid JSON in NARA Harvester
+
 v0.7.1 - 2015 Dec 22
 ---
 * Implement the Hathi harvester
