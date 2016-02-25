@@ -18,14 +18,17 @@ class IaHarvester
   # @param opts [Hash] a hash of options as defined by {.expected_opts}
   #
   # @example
-  #    Typical instantiation, good for most cases:
   #
-  #      IaHarvester.new(uri: 'http://archive.org/...')
+  #    IaHarvester.new(
+  #      :uri => 'http://archive.org/advancedsearch.php?fl%5B%5D=identifier&output=json'
+  #      :ia => {:collections => ['bostonpubliclibrary', 'getty']}
+  #    )
   #
   # Accepts options passed as `:ia => opts`
   #
   # Options allowed are:
   #
+  #   - collections: An array of collections keys to harvest
   #   - threads:     The number of records to fetch asynchronously
   #                  in a batch (default: 10)
   #   - name:        See Krikri::Harvester#initialize.  (default: "ia")
@@ -34,6 +37,21 @@ class IaHarvester
   #
   def initialize(opts = {})
     @opts = opts.fetch(:ia, {})
+
+    collections = @opts.fetch(:collections, [])
+    if collections.empty?
+      msg = ":collections option is required but missing"
+      Krikri::Logger.log(:error, msg)
+      raise msg
+    else
+      # other parameters are required for a successful search so
+      # we can assume we're appending to an existing query string
+      collection_qs = '&q=collection:(' +
+        collections.join('%20OR%20') +
+        ')'
+      opts[:uri] += collection_qs
+    end
+
     super
 
     @opts[:threads] ||= DEFAULT_THREAD_COUNT
@@ -49,9 +67,10 @@ class IaHarvester
     {
       key: :ia,
       opts: {
-        threads:  { type: :integer, required: false },
-        name:  { type: :string, required: false },
-        max_records:  { type: :integer, required: false }
+        collections: { type: :string, multiple_ok: true, required: true },
+        threads: { type: :integer, required: false },
+        name: { type: :string, required: false },
+        max_records: { type: :integer, required: false }
       }
     }
   end
