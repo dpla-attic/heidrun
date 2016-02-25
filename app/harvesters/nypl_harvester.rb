@@ -25,6 +25,7 @@ class NyplHarvester
   #               Defaults to "http://api.repo.nypl.org/api/v1'"
   # - name:       See Krikri::Harvester#initialize.  Defaults to "nypl"
   # - batchsize:  The number of records to fetch with each API request.
+  #               Maps to the 'per_page' parameter on NYPL's API.
   #               Defaults to 10.
   # - threads:    The number of record pages to fetch in parallel.
   #               Defaults to 5.
