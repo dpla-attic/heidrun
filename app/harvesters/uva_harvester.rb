@@ -90,8 +90,8 @@ class UVAHarvester
     batch = []
     mets.each do |rec|
       uri = rec.xpath('mets:mdRef').first.attribute('href').value
-      batch << { :request => @http.add_request(uri: URI.parse(uri)),
-                 :id => rec.attribute('ID').value }
+      batch << { request: @http.add_request(uri: URI.parse(uri)),
+                 id: rec.attribute('ID').value }
     end
 
     batch.lazy.flat_map do |record|
@@ -121,7 +121,7 @@ class UVAHarvester
       unless response.status == 200
         msg = "Couldn't get collection mets file"
         Krikri::Logger.log(:error, msg)
-        raise msg
+        fail msg
       end
 
       @collection_mets = Nokogiri::XML(response.body)
@@ -140,7 +140,7 @@ class UVAHarvester
       unless response.status == 200
         msg = "Couldn't get collection mods file"
         Krikri::Logger.log(:error, msg)
-        raise msg
+        fail msg
       end
 
       @collection_mods = Nokogiri::XML(response.body)
