@@ -24,6 +24,7 @@ class NyplHarvester
   # - uri:        See Krikri::Harvester#initialize.
   #               Defaults to "http://api.repo.nypl.org/api/v1'"
   # - name:       See Krikri::Harvester#initialize.  Defaults to "nypl"
+  # - apikey:     The authorization token required to access the API.
   # - batchsize:  The number of records to fetch with each API request.
   #               Maps to the 'per_page' parameter on NYPL's API.
   #               Defaults to 10.
@@ -36,6 +37,12 @@ class NyplHarvester
     @opts[:threads] ||= DEFAULT_THREAD_COUNT
     @opts[:batchsize] ||= DEFAULT_BATCHSIZE
 
+    unless @opts[:apikey]
+      msg = ':apikey option is required but missing'
+      Krikri::Logger.log(:error, msg)
+      fail msg
+    end
+
     super({ uri: DEFAULT_URI }.merge(opts))
 
     @http = Krikri::AsyncUriGetter.new
@@ -47,6 +54,9 @@ class NyplHarvester
     {
       key: :nypl,
       opts: {
+        uri:  { type: :string, required: false },
+        name:  { type: :string, required: false },
+        apikey:  { type: :string, required: true },
         threads:  { type: :integer, required: false },
         batchsize:  { type: :integer, required: false }
       }
