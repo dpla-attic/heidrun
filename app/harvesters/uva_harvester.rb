@@ -5,6 +5,7 @@ class UVAHarvester
   include Krikri::Harvester
 
   DEFAULT_THREAD_COUNT = 10
+  DEFAULT_HARVEST_NAME = 'virginia'
   DEFAULT_MAX_RECORDS = 0
 
   ##
@@ -23,7 +24,8 @@ class UVAHarvester
   #
   #   - threads:     The number of records to fetch asynchronously
   #                  in a batch (default: 10)
-  #   - name:        See Krikri::Harvester#initialize.  Defaults to "uva"
+  #   - name:        See Krikri::Harvester#initialize.
+  #                  Defaults to "virginia"
   #   - max_records: The maximum number of records to harvest
   #                  0 means no limit (default 0)
   #
@@ -32,6 +34,7 @@ class UVAHarvester
     super
 
     @opts[:threads] ||= DEFAULT_THREAD_COUNT
+    @opts[:name] ||= DEFAULT_HARVEST_NAME
     @opts[:max_records] ||= DEFAULT_MAX_RECORDS
 
     @http = Krikri::AsyncUriGetter.new
@@ -44,6 +47,7 @@ class UVAHarvester
       key: :uva,
       opts: {
         threads:  { type: :integer, required: false },
+        name:  { type: :string, required: false },
         max_records:  { type: :integer, required: false }
       }
     }
