@@ -40,9 +40,9 @@ class IaHarvester
 
     collections = @opts.fetch(:collections, [])
     if collections.empty?
-      msg = ":collections option is required but missing"
+      msg = ':collections option is required but missing'
       Krikri::Logger.log(:error, msg)
-      raise msg
+      fail msg
     else
       # other parameters are required for a successful search so
       # we can assume we're appending to an existing query string
@@ -182,7 +182,7 @@ class IaHarvester
         msg = "Couldn't get search page"
         Krikri::Logger.log(:error, msg)
         # we can't really continue
-        raise msg
+        fail msg
       end
 
       JSON.parse(response.body)
