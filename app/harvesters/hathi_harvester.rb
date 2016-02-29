@@ -7,6 +7,24 @@ require 'zlib'
 #
 # Supports either harvesting a previously downloaded dump file, or downloading
 # the latest available dump file and harvesting that.
+#
+# @example
+#   Specifying a downloaded file.  Note that `uri` is not a URI (e.g.
+#   "file:// ...")
+#
+#   HathiHarvester.enqueue({
+#     uri: '/home/dpla/data/hathi/dpla_full_20160201.tar.gz'
+#   });
+#
+# @example
+#   Providing the downloads page and letting the harvester pick.  We provide
+#   a URL to the "downloads" HTML page, and the harvester finds the most
+#   recent file based on its filename.
+#
+#   HathiHarvester.enqueue({
+#     uri: 'http://example.tld/path/to/dpla_metadata/'
+#   })
+#
 class HathiHarvester < Krikri::Harvesters::MarcXMLHarvester
   ##
   # @see Krikri::Harvesters::MarcXMLHarvester#each_collection
@@ -34,7 +52,12 @@ class HathiHarvester < Krikri::Harvesters::MarcXMLHarvester
   end
 
   ##
-  # @return [URI] Determine the URL of the most recent Hathi data dump.
+  # Return the URL of the most recent Hathi data dump
+  #
+  # `@uri` is expected to be a URL to the _index page_ that lists the
+  # gzipped tarball files.
+  #
+  # @return [URI] The URL of the .tar.gz file
   def latest_tarball_url
     html = Net::HTTP.get(URI(uri))
     parsed_html = Nokogiri::HTML(html)
