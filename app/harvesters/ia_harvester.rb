@@ -28,14 +28,17 @@ class IaHarvester
   #
   # Options allowed are:
   #
-  #   - collections: An array of collections keys to harvest
-  #   - threads:     The number of records to fetch asynchronously
-  #                  in a batch (default: 10)
+  #   - uri:         See Krikri::Harvester#initialize.
   #   - name:        See Krikri::Harvester#initialize.  (default: "ia")
-  #   - max_records: The maximum number of records to harvest
-  #                  0 means no limit (default 0)
+  #   - ia:
+  #     - collections: An array of collections keys to harvest
+  #     - threads:     The number of records to fetch asynchronously
+  #                    in a batch (default: 10)
+  #     - max_records: The maximum number of records to harvest
+  #                    0 means no limit (default 0)
   #
   def initialize(opts = {})
+    opts[:name] ||= DEFAULT_HARVEST_NAME
     @opts = opts.fetch(:ia, {})
 
     collections = @opts.fetch(:collections, [])
@@ -55,7 +58,6 @@ class IaHarvester
     super
 
     @opts[:threads] ||= DEFAULT_THREAD_COUNT
-    @opts[:name] ||= DEFAULT_HARVEST_NAME
     @opts[:max_records] ||= DEFAULT_MAX_RECORDS
 
     @http = Krikri::AsyncUriGetter.new(opts: { follow_redirects: true })
@@ -69,7 +71,6 @@ class IaHarvester
       opts: {
         collections: { type: :string, multiple_ok: true, required: true },
         threads: { type: :integer, required: false },
-        name: { type: :string, required: false },
         max_records: { type: :integer, required: false }
       }
     }

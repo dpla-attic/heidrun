@@ -24,16 +24,17 @@ class NyplHarvester
   # - uri:        See Krikri::Harvester#initialize.
   #               Defaults to "http://api.repo.nypl.org/api/v1'"
   # - name:       See Krikri::Harvester#initialize.  Defaults to "nypl"
-  # - apikey:     The authorization token required to access the API.
-  # - batchsize:  The number of records to fetch with each API request.
-  #               Maps to the 'per_page' parameter on NYPL's API.
-  #               Defaults to 10.
-  # - threads:    The number of record pages to fetch in parallel.
-  #               Defaults to 5.
+  # - nypl:
+  #   - apikey:     The authorization token required to access the API.
+  #   - batchsize:  The number of records to fetch with each API request.
+  #                 Maps to the 'per_page' parameter on NYPL's API.
+  #                 Defaults to 10.
+  #   - threads:    The number of record pages to fetch in parallel.
+  #                 Defaults to 5.
   #
   def initialize(opts = {})
+    opts[:name] ||= DEFAULT_NAME
     @opts = opts.fetch(:nypl)
-    @opts[:name] ||= DEFAULT_NAME
     @opts[:threads] ||= DEFAULT_THREAD_COUNT
     @opts[:batchsize] ||= DEFAULT_BATCHSIZE
 
@@ -54,8 +55,6 @@ class NyplHarvester
     {
       key: :nypl,
       opts: {
-        uri:  { type: :string, required: false },
-        name:  { type: :string, required: false },
         apikey:  { type: :string, required: true },
         threads:  { type: :integer, required: false },
         batchsize:  { type: :integer, required: false }
