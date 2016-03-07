@@ -20,9 +20,11 @@ class UVAHarvester
   # @param opts [Hash] a hash of options as defined by {.expected_opts}
   #
   # @example
-  #    Typical instantiation, good for most cases:
-  #
+  #    Explicitly set the URI:
   #      UVAHarvester.new(uri: 'http://example.edu/fedora/...')
+  #
+  #    Or use the default URI and specify collection PIDs to harvest:
+  #      UVAHarvester.new(:uva => {:collections => ['744806', '817985']})
   #
   # Accepts options passed as `:uva => opts`
   #
@@ -112,6 +114,8 @@ class UVAHarvester
     end
   end
 
+  ##
+  # Harvester for a single collection
   class UVACollectionHarvester
 
     def initialize(uri, threads, max_records, record_class, id_minter)
