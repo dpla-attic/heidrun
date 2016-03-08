@@ -3,9 +3,10 @@ require 'webmock/rspec'
 
 describe IaHarvester, :webmock => true do
 
-  let(:base_search_url) { 'http://archive.org/advancedsearch.php' }
-  let(:search_page_1_url) { base_search_url + '&start=0&rows=2' }
-  let(:search_page_2_url) { base_search_url + '&start=2&rows=2' }
+  let(:base_search_url) { 'http://archive.org/advancedsearch.php?output=json' }
+  let(:collection_qs) { '&q=collection:(foo)' }
+  let(:search_page_1_url) { base_search_url + collection_qs + '&start=0&rows=2' }
+  let(:search_page_2_url) { base_search_url + collection_qs + '&start=2&rows=2' }
   let(:base_download_url) { 'http://archive.org/download' }
   let(:base_redirect_url) { 'http://redirect.archive.org' }
   let(:id1_meta_url) { base_download_url + '/id1/id1_meta.xml' }
@@ -108,7 +109,7 @@ describe IaHarvester, :webmock => true do
 
   subject do
     opts = { uri: base_search_url,
-             ia: { threads: 2 } }
+             ia: { collections: ['foo'], threads: 2 } }
     IaHarvester.new(opts)
   end
 
