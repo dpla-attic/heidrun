@@ -7,6 +7,8 @@ describe UVAHarvester, :webmock => true do
   let(:collection_url) { base_url + '/collection' }
   let(:record1_url) { base_url + '/record1' }
   let(:record2_url) { base_url + '/record2' }
+  let(:foo_default_url) { 'http://fedoraproxy.lib.virginia.edu/fedora/objects/uva-lib%3Afoo/methods/uva-lib%3AmetsSDef/getMETS' }
+  let(:foo_collection_url) { foo_default_url + '/collection' }
 
   let(:collection_mets) do
     <<-EOS
@@ -93,6 +95,21 @@ describe UVAHarvester, :webmock => true do
       .to_return(status: 200, body: record1_mods, headers: {})
     stub_request(:get, record2_url)
       .to_return(status: 200, body: record2_mods, headers: {})
+    stub_request(:get, foo_default_url)
+      .to_return(status: 200, body: collection_mets, headers: {})
+    stub_request(:get, foo_collection_url)
+      .to_return(status: 200, body: collection_mods, headers: {})
+  end
+
+  describe 'collections option' do
+    subject do
+      opts = { uva: {collections: ['foo']} }
+      UVAHarvester.new(opts)
+    end
+
+    it 'will take a collections option instead of a uri' do
+      expect(subject.count).to eq(2)
+    end
   end
 
   describe '#count' do
