@@ -65,7 +65,11 @@ class UVAHarvester
   ##
   # Work out the list of collection uris
   def get_collection_uris(uri, collections = [])
-    collections.empty? ? [uri] : collections.map { |c| uri.gsub('[PID]', c) }
+    if (collections == nil || collections.empty?)
+      [uri]
+    else
+      collections.map { |c| uri.gsub('[PID]', c) }
+    end
   end
 
   ##
@@ -117,6 +121,7 @@ class UVAHarvester
   ##
   # Harvester for a single collection
   class UVACollectionHarvester
+    include Krikri::Harvester
 
     def initialize(uri, threads, max_records, record_class, id_minter)
       @uri = uri
