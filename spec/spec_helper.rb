@@ -39,11 +39,13 @@ RSpec.configure do |config|
 
   config.after(:suite) do
     clear_repository
+    WebMock.allow_net_connect!
   end
 
   config.before(:each) do |example|
     if example.metadata[:webmock]
-      WebMock.disable_net_connect!
+      WebMock.disable_net_connect!(:allow_localhost => true, 
+                                   allow: 'codeclimate.com')
     else
       WebMock.allow_net_connect!
     end
