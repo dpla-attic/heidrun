@@ -180,7 +180,8 @@ class IaHarvester
   # Get a page of search results for the collection
   # @return [JSON] a page of results containing identifiers for items
   def collection_search(start: 0, rows: @opts[:threads])
-    req_uri = "#{uri}&start=#{start}&rows=#{rows}"
+    page = (start / rows) + 1
+    req_uri = "#{uri}&page=#{page}&rows=#{rows}"
     Krikri::Logger.log(:debug, "Requesting #{req_uri}")
     @http.add_request(uri: URI.parse(req_uri))
       .with_response do |response|
