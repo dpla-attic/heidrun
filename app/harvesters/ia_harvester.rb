@@ -124,6 +124,7 @@ class IaHarvester
 
     # parse meta.xml and send requests for corresponding files.xml
     batch.each do |record|
+      Krikri::Logger.log(:debug, "Getting meta XML for #{record[:id]}")
       record[:meta_request].with_response do |response|
         unless response.status == 200
           msg = "Couldn't get meta for #{record[:id]}, got #{response.status}"
@@ -143,6 +144,7 @@ class IaHarvester
 
     # parse files.xml, attach it to meta.xml and send requests for marc.xml
     batch.each do |record|
+      Krikri::Logger.log(:debug, "Getting files XML for #{record[:id]}")
       record[:files_request].with_response do |response|
         if response.status == 200
           files = Nokogiri::XML(response.body)
@@ -159,6 +161,7 @@ class IaHarvester
 
     # parse marc.xml and attach it, then build records
     batch.lazy.map do |record|
+      Krikri::Logger.log(:debug, "Getting MARC for #{record[:id]}")
       record[:marc_request].with_response do |response|
         if response.status == 200
           marc = Nokogiri::XML(response.body)
@@ -177,10 +180,12 @@ class IaHarvester
   # Get a page of search results for the collection
   # @return [JSON] a page of results containing identifiers for items
   def collection_search(start: 0, rows: @opts[:threads])
-    @http.add_request(uri: URI.parse("#{uri}&start=#{start}&rows=#{rows}"))
+    req_uri = "#{uri}&start=#{start}&rows=#{rows}"
+    Krikri::Logger.log(:debug, "Requesting #{req_uri}")
+    @http.add_request(uri: URI.parse(req_uri))
       .with_response do |response|
       unless response.status == 200
-        msg = "Couldn't get search page"
+        msg = "Couldn't get search page for #{req_uri}"
         Krikri::Logger.log(:error, msg)
         # we can't really continue
         fail msg
