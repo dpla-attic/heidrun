@@ -1,3 +1,4 @@
+require 'uri'
 require 'json'
 
 ##
@@ -7,6 +8,7 @@ class IaHarvester
   include Krikri::Harvester
 
   DEFAULT_THREAD_COUNT = 10
+  DEFAULT_PAGE_SIZE = 1000
   DEFAULT_HARVEST_NAME = 'ia'
   DEFAULT_MAX_RECORDS = 0
 
@@ -20,7 +22,7 @@ class IaHarvester
   # @example
   #
   #    IaHarvester.new(
-  #      :uri => 'http://archive.org/advancedsearch.php?fl%5B%5D=identifier&output=json'
+  #      :uri => 'https://archive.org/services/search/beta/scrape.php'
   #      :ia => {:collections => ['bostonpubliclibrary', 'getty']}
   #    )
   #
@@ -47,12 +49,14 @@ class IaHarvester
       Krikri::Logger.log(:error, msg)
       fail msg
     else
-      # other parameters are required for a successful search so
-      # we can assume we're appending to an existing query string
-      collection_qs = '&q=collection:(' +
-        collections.join('%20OR%20') +
-        ')'
-      opts[:uri] += collection_qs
+      # Add query parameters to our base URL
+      base_uri = URI.parse(opts[:uri])
+      base_uri.query = [base_uri.query,
+                        'q=collection:(' + collections.join('%20OR%20') + ')',
+                        "size=#{DEFAULT_PAGE_SIZE}"
+                       ].compact.join('&')
+
+      opts[:uri] = base_uri.to_s
     end
 
     super
@@ -77,21 +81,20 @@ class IaHarvester
   end
 
   ##
-  # @see Krikri::Harvester#count
-  def count
-    Integer(collection_search['response']['numFound'])
-  end
-
-  ##
   # @return [Enumerator::Lazy] an enumerator of the records targeted by this
   #   harvester.
   def records
     threads = @opts.fetch(:threads)
     max_records = @opts.fetch(:max_records)
-    last_record = max_records == 0 ? count : [count, max_records].min
 
-    (0...last_record - 1).step(threads).lazy.flat_map do |offset|
-      enumerate_records(record_ids(start: offset, rows: threads))
+    id_sequence = record_ids
+
+    if max_records > 0
+      id_sequence = id_sequence.take(max_records)
+    end
+
+    id_sequence.each_slice(threads).lazy.flat_map do |identifiers|
+      enumerate_records(identifiers)
     end
   end
 
@@ -100,6 +103,37 @@ class IaHarvester
   # @return [#to_s] the record
   def get_record(identifier)
     enumerate_records([identifier]).first
+  end
+
+  ##
+  # @see Krikri::Harvester#record_ids
+  def record_ids
+    Enumerator.new do |en|
+      cursor = nil
+      loop do
+        cursor_param = cursor ? "&cursor=#{cursor}" : ''
+        req_uri = uri + cursor_param
+        @http.add_request(uri: URI.parse(req_uri))
+          .with_response do |response|
+          unless response.status == 200
+            msg = "Failed to fetch page of IDs for #{req_uri}"
+            Krikri::Logger.log(:error, msg)
+            # we can't really continue
+            fail msg
+          end
+
+          result = JSON.parse(response.body)
+
+          result['items'].each do |item|
+            en << item['identifier']
+          end
+
+          cursor = result['cursor']
+        end
+
+        break unless cursor
+      end
+    end
   end
 
   private
@@ -173,35 +207,6 @@ class IaHarvester
         end
         @record_class.build(mint_id(record[:id]), record[:meta].to_xml)
       end
-    end
-  end
-
-  ##
-  # Get a page of search results for the collection
-  # @return [JSON] a page of results containing identifiers for items
-  def collection_search(start: 0, rows: @opts[:threads])
-    page = (start / rows) + 1
-    req_uri = "#{uri}&page=#{page}&rows=#{rows}"
-    Krikri::Logger.log(:debug, "Requesting #{req_uri}")
-    @http.add_request(uri: URI.parse(req_uri))
-      .with_response do |response|
-      unless response.status == 200
-        msg = "Couldn't get search page for #{req_uri}"
-        Krikri::Logger.log(:error, msg)
-        # we can't really continue
-        fail msg
-      end
-
-      JSON.parse(response.body)
-    end
-  end
-
-  ##
-  # Get a page of record identifiers for the collection
-  # @return [Array] list of identifiers
-  def record_ids(start: 0, rows: @opts[:threads])
-    collection_search(start: start, rows: rows)['response']['docs'].map do |d|
-      d['identifier']
     end
   end
 end
