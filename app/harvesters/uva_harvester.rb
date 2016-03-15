@@ -9,7 +9,7 @@ class UVAHarvester
   include Krikri::Harvester
 
   DEFAULT_URI_TEMPLATE =
-    'http://fedoraproxy.lib.virginia.edu/fedora/objects/uva-lib%3A[PID]/methods/uva-lib%3AmetsSDef/getMETS'
+    'http://fedoraproxy.lib.virginia.edu/fedora/objects/[PID]/methods/uva-lib%3AmetsSDef/getMETS'
   DEFAULT_THREAD_COUNT = 10
   DEFAULT_HARVEST_NAME = 'virginia'
   DEFAULT_MAX_RECORDS = 0
@@ -24,7 +24,7 @@ class UVAHarvester
   #      UVAHarvester.new(uri: 'http://example.edu/fedora/...')
   #
   #    Or use the default URI and specify collection PIDs to harvest:
-  #      UVAHarvester.new(:uva => {:collections => ['744806', '817985']})
+  #      UVAHarvester.new(:uva => {:collections => ['uva-lib:744806', 'uva-lib:817985']})
   #
   # Accepts options passed as `:uva => opts`
   #
@@ -169,11 +169,10 @@ class UVAHarvester
       batch = []
       mets.each do |rec|
         uri = rec.xpath('mets:mdRef').first.attribute('href').value
-        batch << { request: @http.add_request(uri: URI.parse(uri)),
-          id: rec.attribute('ID').value }
+        batch << { request: @http.add_request(uri: URI.parse(uri)) }
       end
 
-      batch.lazy.flat_map do |record|
+      batch.flat_map do |record|
         record[:request].with_response do |response|
           unless response.status == 200
             msg = "Couldn't get record #{record[:id]}"
@@ -185,7 +184,9 @@ class UVAHarvester
           mods.child.add_child('<extension />')[0]
             .add_child(collection_mods.xpath('//mods:dateIssued').to_xml)
 
-          @record_class.build(mint_id(record[:id]), mods.to_xml)
+          record_id = mods.xpath('//mods:identifier[@type="pid"]').first.text
+
+          @record_class.build(mint_id(record_id), mods.to_xml)
         end
       end
     end

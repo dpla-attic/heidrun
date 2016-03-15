@@ -7,7 +7,7 @@ describe UVAHarvester, :webmock => true do
   let(:collection_url) { base_url + '/collection' }
   let(:record1_url) { base_url + '/record1' }
   let(:record2_url) { base_url + '/record2' }
-  let(:foo_default_url) { 'http://fedoraproxy.lib.virginia.edu/fedora/objects/uva-lib%3Afoo/methods/uva-lib%3AmetsSDef/getMETS' }
+  let(:foo_default_url) { 'http://fedoraproxy.lib.virginia.edu/fedora/objects/foo/methods/uva-lib%3AmetsSDef/getMETS' }
   let(:foo_collection_url) { foo_default_url + '/collection' }
 
   let(:collection_mets) do
@@ -64,6 +64,7 @@ describe UVAHarvester, :webmock => true do
        <titleInfo>
           <title>Letter from Mickey Mouse</title>
        </titleInfo>
+       <identifier type="pid" displayLabel="UVA Library Fedora Repository PID">uva-lib:r1</identifier>
     </mods>
     EOS
   end
@@ -77,6 +78,7 @@ describe UVAHarvester, :webmock => true do
        <titleInfo>
           <title>Letter from Scrooge McDuck</title>
        </titleInfo>
+       <identifier type="pid" displayLabel="UVA Library Fedora Repository PID">uva-lib:r2</identifier>
     </mods>
     EOS
   end
