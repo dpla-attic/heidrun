@@ -5,8 +5,8 @@ describe UVAHarvester, :webmock => true do
 
   let(:base_url) { 'http://example.edu' }
   let(:collection_url) { base_url + '/collection' }
-  let(:record1_url) { base_url + '/record1' }
-  let(:record2_url) { base_url + '/record2' }
+  let(:record1_url) { base_url + '/objects/record1/methods/uva-lib:modsSDef/getMODS' }
+  let(:record2_url) { base_url + '/objects/record2/methods/uva-lib:modsSDef/getMODS' }
   let(:foo_default_url) { 'http://fedoraproxy.lib.virginia.edu/fedora/objects/foo/methods/uva-lib%3AmetsSDef/getMETS' }
   let(:foo_collection_url) { foo_default_url + '/collection' }
 
@@ -22,11 +22,11 @@ describe UVAHarvester, :webmock => true do
        </mets:dmdSec>
        <mets:dmdSec ID="record1-mods">
           <mets:mdRef LOCTYPE="PURL" MDTYPE="MODS"
-                      xlink:href="#{base_url}/record1"/>
+                      xlink:href="#{record1_url}"/>
        </mets:dmdSec>
        <mets:dmdSec ID="record2-mods">
           <mets:mdRef LOCTYPE="PURL" MDTYPE="MODS"
-                      xlink:href="#{base_url}/record2"/>
+                      xlink:href="#{record2_url}"/>
        </mets:dmdSec>
     </mets:mets>
     EOS
@@ -138,7 +138,7 @@ describe UVAHarvester, :webmock => true do
     end
 
     it 'keeps going after hitting a bad record' do
-      stub_request(:get, "#{base_url}/record1")
+      stub_request(:get, "#{record1_url}")
         .to_return(status: 500, body: 'disaster strikes!', headers: {})
 
       expect(subject.records.count).to eq(1)

@@ -169,7 +169,8 @@ class UVAHarvester
       batch = []
       mets.each do |rec|
         uri = rec.xpath('mets:mdRef').first.attribute('href').value
-        batch << { request: @http.add_request(uri: URI.parse(uri)) }
+        batch << { record_uri: uri,
+                   request: @http.add_request(uri: URI.parse(uri)) }
       end
 
       batch.flat_map do |record|
@@ -184,7 +185,16 @@ class UVAHarvester
           mods.child.add_child('<extension />')[0]
             .add_child(collection_mods.xpath('//mods:dateIssued').to_xml)
 
-          record_id = mods.xpath('//mods:identifier[@type="pid"]').first.text
+          # URL will resemble something like:
+          #  http://example.org/fedora/objects/uva-lib:12345/methods/uva-lib:modsSDef/getMODS
+          #
+          ((record_id,)) = record[:record_uri].scan(%r{/objects/(.*?)/methods/})
+
+          unless record_id
+            msg = "Failed to extract record ID from URI: #{record[:record_uri]}"
+            Krikri::Logger.log(:error, msg)
+            fail msg
+          end
 
           @record_class.build(mint_id(record_id), mods.to_xml)
         end
