@@ -1,7 +1,3 @@
-# For the UVA harvester,
-# it should be possible to have the harvester take multiple collection PIDs
-# as an parameter rather than requiring separate invocations for each collection.
-
 ##
 # A harvester implementation for UVA
 #
