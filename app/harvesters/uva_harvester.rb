@@ -58,7 +58,7 @@ class UVAHarvester
 
     @collection_harvesters = @collection_uris.map do |uri|
       UVACollectionHarvester.new(uri, @opts[:threads], @opts[:max_records],
-                                 @record_class, @id_minter)
+                                 @record_class, @id_minter, @name)
     end
   end
 
@@ -123,12 +123,18 @@ class UVAHarvester
   class UVACollectionHarvester
     include Krikri::Harvester
 
-    def initialize(uri, threads, max_records, record_class, id_minter)
+    def initialize(uri, threads, max_records, record_class,
+                   id_minter, harvester_name)
       @uri = uri
       @threads = threads
       @max_records = max_records
       @record_class = record_class
+
+      # Krikri::Harvester#mint_id expects to find the @id_minter and @name
+      # instance variables, so we pass them along here.
       @id_minter = id_minter
+      @name = harvester_name
+
       @http = Krikri::AsyncUriGetter.new
     end
 
