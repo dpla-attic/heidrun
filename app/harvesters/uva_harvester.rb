@@ -187,20 +187,43 @@ class UVAHarvester
           mods.child.add_child('<extension />')[0]
             .add_child(collection_mods.xpath('//mods:dateIssued').to_xml)
 
-          # URL will resemble something like:
-          #  http://example.org/fedora/objects/uva-lib:12345/methods/uva-lib:modsSDef/getMODS
-          #
-          ((record_id,)) = record[:record_uri].scan(%r{/objects/(.*?)/methods/})
-
-          unless record_id
-            msg = "Failed to extract record ID from URI: #{record[:record_uri]}"
-            Krikri::Logger.log(:error, msg)
-            fail msg
-          end
+          record_id = extract_record_id(record[:record_uri], mods)
 
           @record_class.build(mint_id(record_id), mods.to_xml)
         end
       end
+    end
+
+    ##
+    # Pull the record ID from the (several) places in the MODS record it might
+    #   appear.
+    # @param mods [Nokogiri] the parsed MODS record
+    # @return [String] the identifier for the record
+    # @raise [RuntimeError] if a suitable identifier could not be found
+    def extract_record_id(identifier, mods)
+      # If there's a suitable identifier element, take its value.
+      id_element = mods.xpath('/mods:mods/mods:identifier[@type="uri"]').first
+
+      # Otherwise, look for a "primary display" URL.  This will give us a whole
+      # URL like:
+      #
+      #   http://search.lib.virginia.edu/catalog/uva-lib:330187
+      #
+      # rather than a short identifier like:
+      #
+      #   uva-lib:1234
+      #
+      # but this appears to be consistent with what the original harvester did.
+      id_element ||= mods.xpath('/mods:mods/mods:location/' \
+                                'mods:url[@usage="primary display"]')
+
+      if !id_element || id_element.text.blank?
+        msg = "Failed to extract record ID from URI: #{identifier}"
+        Krikri::Logger.log(:error, msg)
+        fail msg
+      end
+
+      id_element.text.strip
     end
 
     ##

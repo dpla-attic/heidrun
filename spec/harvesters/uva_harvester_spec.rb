@@ -64,7 +64,7 @@ describe UVAHarvester, :webmock => true do
        <titleInfo>
           <title>Letter from Mickey Mouse</title>
        </titleInfo>
-       <identifier type="pid" displayLabel="UVA Library Fedora Repository PID">uva-lib:r1</identifier>
+       <identifier type="uri" displayLabel="UVA Library Fedora Repository PID">uva-lib:r1</identifier>
     </mods>
     EOS
   end
@@ -78,7 +78,9 @@ describe UVAHarvester, :webmock => true do
        <titleInfo>
           <title>Letter from Scrooge McDuck</title>
        </titleInfo>
-       <identifier type="pid" displayLabel="UVA Library Fedora Repository PID">uva-lib:r2</identifier>
+       <location>
+          <url usage="primary display">http://search.lib.virginia.edu/catalog/uva-lib:r2</url>
+       </location>
     </mods>
     EOS
   end
