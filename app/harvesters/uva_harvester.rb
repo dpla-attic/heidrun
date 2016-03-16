@@ -189,6 +189,7 @@ class UVAHarvester
 
           record_id = extract_record_id(record[:record_uri], mods)
 
+          Krikri::Logger.log(:debug, "Extracted record ID #{record_id}")
           @record_class.build(mint_id(record_id), mods.to_xml)
         end
       end
@@ -234,7 +235,7 @@ class UVAHarvester
 
       @http.add_request(uri: URI.parse(@uri)).with_response do |response|
         unless response.status == 200
-          msg = "Couldn't get collection mets file"
+          msg = "Couldn't get collection mets file #{@uri}"
           Krikri::Logger.log(:error, msg)
           fail msg
         end
@@ -253,7 +254,7 @@ class UVAHarvester
 
       @http.add_request(uri: URI.parse(uri)).with_response do |response|
         unless response.status == 200
-          msg = "Couldn't get collection mods file"
+          msg = "Couldn't get collection mods file #{uri}"
           Krikri::Logger.log(:error, msg)
           fail msg
         end
