@@ -176,7 +176,7 @@ class UVAHarvester
       batch.flat_map do |record|
         record[:request].with_response do |response|
           unless response.status == 200
-            msg = "Couldn't get record #{record[:id]}"
+            msg = "Couldn't get record from URI #{record[:record_uri]}"
             Krikri::Logger.log(:error, msg)
             next []
           end
