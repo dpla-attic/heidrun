@@ -64,7 +64,10 @@ class IaHarvester
     @opts[:threads] ||= DEFAULT_THREAD_COUNT
     @opts[:max_records] ||= DEFAULT_MAX_RECORDS
 
-    @http = Krikri::AsyncUriGetter.new(opts: { follow_redirects: true })
+    @http = Krikri::AsyncUriGetter.new(opts: {
+                                         follow_redirects: true,
+                                         inline_exceptions: true
+                                       })
   end
 
   ##
@@ -194,7 +197,7 @@ class IaHarvester
     batch.each { |r| r[:marc_request].join }
 
     # parse marc.xml and attach it, then build records
-    batch.lazy.map do |record|
+    batch.map do |record|
       Krikri::Logger.log(:debug, "Getting MARC for #{record[:id]}")
       record[:marc_request].with_response do |response|
         if response.status == 200
