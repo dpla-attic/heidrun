@@ -1,8 +1,9 @@
 source 'https://rubygems.org'
 
 gem 'rails', '~> 4.1.11'
+gem 'rake',  '~> 11.0.0'
 
-gem 'krikri', '~> 0.10', '>=0.10.0'
+gem 'krikri', '~> 0.11', '>=0.11.0'
 
 gem 'sqlite3'
 gem 'sass-rails', '~> 4.0.3'
@@ -27,7 +28,7 @@ group :test do
 end
 
 group :development, :test do
-  gem 'rspec-core', '~>3.1'
+  gem 'rspec-core',  '~>3.4.4'
   gem 'rspec-rails', '~>3.1'
   gem 'pry'
   gem 'pry-doc'

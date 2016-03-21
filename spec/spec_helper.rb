@@ -39,13 +39,26 @@ RSpec.configure do |config|
 
   config.after(:suite) do
     clear_repository
+    WebMock.allow_net_connect!
   end
 
   config.before(:each) do |example|
     if example.metadata[:webmock]
-      WebMock.disable_net_connect!
+      WebMock.disable_net_connect!(:allow_localhost => true, 
+                                   allow: 'codeclimate.com')
+
+      # `OriginalRecord.build` will look for an existing record.  Just assume
+      # there isn't one by default.
+      stub_request(:head, %r{/ldp/original_record/[0-9a-f]+\z})
+        .to_return(status: 404)
     else
       WebMock.allow_net_connect!
     end
+  end
+
+  # Allow connections between tests to ensure that repository clearing requests
+  # still run.
+  config.after(:each) do |_|
+    WebMock.allow_net_connect!
   end
 end
