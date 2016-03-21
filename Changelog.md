@@ -1,3 +1,17 @@
+v0.8.0 - 2016 Mar 21
+---
+* Upgrade to Krikri 0.11 or higher
+* Add CdlHarvester 
+* Introduce UVA, IA and NYPL harvesters using Krikri::AsyncUriGetter
+* Allow net connect after test suite for CodeClimate
+* Upgrade Rake & tighten up rake dependency
+* Add Smithsonian harvester
+* Use bundler 1.11 and add Rubies 2.1.6, 2.2.3, and 2.3.0 in CI
+* Parameterize log_level configuration setting
+* Add doc comments to HathiHarvester re. file URIs
+* Set rbenv global version
+* Disable Spring
+
 v0.7.2 - 2016 Jan 22
 ---
 * Add logging and retries for invalid JSON in NARA Harvester
