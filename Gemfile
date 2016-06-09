@@ -28,6 +28,7 @@ group :test do
 end
 
 group :development, :test do
+  gem 'krikri-spec', github: 'dpla/krikri-spec', branch: 'develop'
   gem 'rspec-core',  '~>3.4.4'
   gem 'rspec-rails', '~>3.1'
   gem 'pry'
