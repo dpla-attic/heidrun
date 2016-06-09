@@ -1,5 +1,7 @@
 require 'spec_helper'
 
+require 'krikri/spec/harvester'
+
 ##
 # Helper methods for building our test data
 module HathiTestHelpers
@@ -30,6 +32,8 @@ end
 
 describe HathiHarvester, :webmock => true do
   include HathiTestHelpers
+
+  it_behaves_like 'a harvester'
 
   let(:base_url) { 'http://example.com' }
   let(:target_file) { 'dpla_full_20151101.tar.gz' }

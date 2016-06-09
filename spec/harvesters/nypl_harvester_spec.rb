@@ -1,6 +1,9 @@
 require 'spec_helper'
 
+require 'krikri/spec/harvester'
+
 describe NyplHarvester do
+  it_behaves_like 'a harvester'
   let(:base_url) { 'http://example.com:80/api/v1' }
 
   let(:collections_xml) do

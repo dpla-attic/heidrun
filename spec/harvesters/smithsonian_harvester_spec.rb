@@ -1,5 +1,7 @@
 require 'spec_helper'
 
+require 'krikri/spec/harvester'
+
 ##
 # Helper class for creating a temporary directory with compressed and
 # uncompressed XML files.
@@ -35,6 +37,7 @@ class SmithsonianDirectory
 end
 
 describe SmithsonianHarvester, :webmock => false do
+  it_behaves_like 'a harvester'
 
   let(:smithsonian_collection) do
     <<-EOS

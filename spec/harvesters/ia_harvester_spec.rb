@@ -1,7 +1,10 @@
 require 'spec_helper'
 require 'webmock/rspec'
 
+require 'krikri/spec/harvester'
+
 describe IaHarvester, :webmock => true do
+  it_behaves_like 'a harvester'
 
   let(:base_search_url) { 'http://archive.org/scrape.php' }
   let(:collection_qs) { '?q=collection:(foo)' }

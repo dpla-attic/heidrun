@@ -1,7 +1,10 @@
 require 'spec_helper'
 require 'webmock/rspec'
 
+require 'krikri/spec/harvester'
+
 describe UVAHarvester, :webmock => true do
+  it_behaves_like 'a harvester'
 
   let(:base_url) { 'http://example.edu' }
   let(:collection_url) { base_url + '/collection' }

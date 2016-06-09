@@ -1,6 +1,9 @@
 require 'spec_helper'
 
+require 'krikri/spec/harvester'
+
 describe NaraHarvester do
+  it_behaves_like 'a harvester'
 
   subject { described_class.new(id_source_fh: StringIO.new) }
   let(:default_uri) { 'https://catalog.archives.gov/api/v1' }
@@ -8,7 +11,6 @@ describe NaraHarvester do
   let(:doc) { {'naId' => '1', 'description' => {}, 'objects' => {}} }
 
   describe '#new' do
-
     context 'with default opts' do
       it 'has the correct default properties' do
         expect(subject).to have_attributes(uri: default_uri,

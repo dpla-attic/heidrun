@@ -1,6 +1,10 @@
 require 'spec_helper'
 
+require 'krikri/spec/harvester'
+
 describe MdlHarvester do
+  it_behaves_like 'a harvester'
+
   describe '#new' do
     it 'uses MDL options by default' do
       expect(described_class.new)

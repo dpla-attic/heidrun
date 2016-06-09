@@ -1,6 +1,10 @@
 require 'spec_helper'
 
+require 'krikri/spec/harvester'
+
 describe CdlHarvester do
+  it_behaves_like 'a harvester'
+
   describe '#new' do
     it 'uses CDL options by default' do
       expect(described_class.new)
