@@ -11,11 +11,16 @@ class LocHarvester < Krikri::Harvesters::ApiHarvester
   # @param opts [Hash] options for the harvester
   # @see .expected_opts
   #
-  # The options for this harvester should be an array of URIs
+  # The options for this harvester should be an array of URIs because LoC is
+  # specifying sets of records to be harvested.
   #
   def initialize(opts = {})
-    # TODO add defualt URI
-    opts[:uri] ||= ''
+    # https://www.loc.gov/collections/american-revolutionary-war-maps/ (1,251 items)
+    # https://www.loc.gov/collections/civil-war-maps/ (1,707 items)
+    # https://www.loc.gov/collections/panoramic-maps/ (1,433 items)
+    opts[:uri] ||= ['https://www.loc.gov/collections/american-revolutionary-war-maps/?fo=json',
+      'https://www.loc.gov/collections/civil-war-maps/?fo=json',
+      'https://www.loc.gov/collections/panoramic-maps/?fo=json']
     # TODO add name (check)
     opts[:name] ||= 'loc'
     # Item URI
@@ -40,15 +45,21 @@ class LocHarvester < Krikri::Harvesters::ApiHarvester
   # @param identifier [#to_s] the identifier of the record to get
   # @return [#to_s] the record
   def get_record(identifier)
-    # TODO
-    # Should be a call to /item/
-
     response = request(opts[:item_uri] + identifier.to_s + '?fo=json')
-    # response = request(:params => { :q => "id:#{identifier.to_s}" })
-    # build_record(get_docs(response).first)
+    build_record( response )
   end
 
+
   private
+
+  ##
+  # @param doc [Hash] the partial item content included in the search result.
+  # This content does not include the item's id, only the URI to the item page.
+  #
+  # @return [Hash] the complete record
+  def get_item(doc)
+    request(doc['id'] + '?fo=json')
+  end
 
   ##
   # Overrides ApiHarvester.get_identifier because the idenitifer field
@@ -59,7 +70,7 @@ class LocHarvester < Krikri::Harvesters::ApiHarvester
   # @return [String] the provider's identifier for the document
   def get_identifier(doc)
     # doc is the response to a request for /item/<id>
-    doc[item][library_of_congress_control_number]
+    doc['item']['library_of_congress_control_number']
   end
 
   ##
@@ -95,15 +106,18 @@ class LocHarvester < Krikri::Harvesters::ApiHarvester
   def enumerate_records
     Enumerator.new do |yielder|
       request_opts = opts.deep_dup
-      loop do
-        break if request_opts.nil?
-        response = request(request_opts.dup)
-        docs = get_docs(response)
-        break if docs.empty?
+      # For each of the sets
+      uri.each do | u |
+        loop do
+          break if request_opts.nil?
+          response = request(u)
+          docs = get_docs(response)
+          break if docs.empty?
 
-        docs.each { |r| yielder << r }
+          docs.each { |r| yielder << get_item(r) }
 
-        request_opts = next_options(response)
+          request_opts = next_options(response)
+        end
       end
     end
   end
@@ -116,16 +130,15 @@ class LocHarvester < Krikri::Harvesters::ApiHarvester
   # @return [#to_s] an instance of @record_class with a minted id and
   #   content the given content
   def build_record(doc)
+    binding.pry
     @record_class.build(mint_id(get_identifier(doc)),
                         get_content(doc),
                         content_type)
   end
 
-
   ##
   # Override request because it needs to support being passed different base URIs
-  def request(uri, request_opts)
-    JSON.parse(RestClient.get(uri, request_opts))
+  def request(request_uri, request_opts=nil)
+    JSON.parse(RestClient.get(request_uri, request_opts))
   end
-
 end
