@@ -28,6 +28,7 @@ group :test do
 end
 
 group :development, :test do
+  gem 'krikri-spec', path: '../krikri-spec'
   gem 'rspec-core',  '~>3.4.4'
   gem 'rspec-rails', '~>3.1'
   gem 'pry'
