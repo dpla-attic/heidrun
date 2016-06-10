@@ -54,11 +54,15 @@ class LocHarvester < Krikri::Harvesters::ApiHarvester
 
   ##
   # @param doc [Hash] the partial item content included in the search result.
-  # This content does not include the item's id, only the URI to the item page.
+  # This content does not include the item's id, only URIs to the various
+  # item pages. Aggregate all the URIs and select those that match the
+  # JSON-enabled view (www.loc.gov/item/<id>)
   #
   # @return [Hash] the complete record
   def get_item(doc)
-    request(doc['id'] + '?fo=json')
+    uris = Array.new( [ doc['aka'], doc['id'], doc['url'] ] ).flatten
+    .uniq.grep(/www.loc.gov\/item/)
+    request(uris.first + '?fo=json') if !uris.nil?
   end
 
   ##
@@ -105,17 +109,20 @@ class LocHarvester < Krikri::Harvesters::ApiHarvester
   # @return [Enumerator] an enumerator over the records
   def enumerate_records
     Enumerator.new do |yielder|
-      request_opts = opts.deep_dup
       # For each of the sets
-      uri.each do | u |
+      uri.each do | request_opts |
         loop do
           break if request_opts.nil?
-          response = request(u)
+          response = request(request_opts)
           docs = get_docs(response)
           break if docs.empty?
 
-          docs.each { |r| yielder << get_item(r) }
-
+          # TODO: Thread Here
+          docs.each do |r|
+            item = get_item(r)
+            # Only add if there is a JSON-enabled view for this item
+            yielder << item if !item.nil?
+          end
           request_opts = next_options(response)
         end
       end
@@ -130,15 +137,32 @@ class LocHarvester < Krikri::Harvesters::ApiHarvester
   # @return [#to_s] an instance of @record_class with a minted id and
   #   content the given content
   def build_record(doc)
-    binding.pry
     @record_class.build(mint_id(get_identifier(doc)),
                         get_content(doc),
                         content_type)
   end
 
   ##
-  # Override request because it needs to support being passed different base URIs
+  # Override request because it needs to support being passed
+  # different base URIs. For most LoC requests, there is no need to included
+  # options as they provide prebuilt pagination URLs in the feed.
+  #
+  # @param request_uri [#to_s] the base URI of the request
+  # @param request_opts [Hash] options for the base URI, defaults to nil if
+  # none provided
+  #
+  # @return
   def request(request_uri, request_opts=nil)
-    JSON.parse(RestClient.get(request_uri, request_opts))
+    parsed_uri = URI(request_uri)
+    # Coerce a scheme for the request URI if one not does exist
+    parsed_uri.scheme = 'http' unless parsed_uri.scheme
+
+    begin
+      JSON.parse(RestClient.get(parsed_uri.to_s, request_opts))
+    rescue JSON::ParserError => e
+      # TODO remove this block, it is only for testing purposes
+      puts "JSON parse error from " + parsed_uri.to_s
+      nil
+    end
   end
 end
