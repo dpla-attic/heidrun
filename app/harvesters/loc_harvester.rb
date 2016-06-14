@@ -62,7 +62,7 @@ class LocHarvester < Krikri::Harvesters::ApiHarvester
   def get_item(doc)
     uris = Array.new( [ doc['aka'], doc['id'], doc['url'] ] ).flatten
     .uniq.grep(/www.loc.gov\/item/)
-    request(uris.first + '?fo=json') if !uris.nil?
+    request(uris.first + '?fo=json') if !uris.empty?
   end
 
   ##
@@ -117,10 +117,15 @@ class LocHarvester < Krikri::Harvesters::ApiHarvester
           docs = get_docs(response)
           break if docs.empty?
 
-          # TODO: Thread Here
+          # Queue #get_items threads
+          threads = []
           docs.each do |r|
-            item = get_item(r)
-            # Only add if there is a JSON-enabled view for this item
+            threads << Thread.new{ get_item(r) }
+          end
+
+          # Process threads and only build record if item is not nil
+          threads.each do |t|
+            item = t.join.value
             yielder << item if !item.nil?
           end
           request_opts = next_options(response)
@@ -159,9 +164,10 @@ class LocHarvester < Krikri::Harvesters::ApiHarvester
 
     begin
       JSON.parse(RestClient.get(parsed_uri.to_s, request_opts))
-    rescue JSON::ParserError => e
-      # TODO remove this block, it is only for testing purposes
-      puts "JSON parse error from " + parsed_uri.to_s
+    rescue => e
+      puts "ERROR: " + e.response
+      puts "When attempting to request " + parsed_uri.to_s
+      # If unable to sucessfully parse the response then return nil
       nil
     end
   end
