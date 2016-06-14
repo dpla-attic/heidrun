@@ -123,7 +123,7 @@ class LocHarvester < Krikri::Harvesters::ApiHarvester
             threads << Thread.new{ get_item(r) }
           end
 
-          # Process threads and only build record if item is not nil
+          # Process threads and queue for #build_record if item is not nil
           threads.each do |t|
             item = t.join.value
             yielder << item if !item.nil?
