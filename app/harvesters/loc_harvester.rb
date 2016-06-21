@@ -1,19 +1,16 @@
 ##
 # Harvester for Library of Congress
-##
-
+# @see krikri::Harvester
 class LocHarvester < Krikri::Harvesters::ApiHarvester
- include Krikri::Harvester
+  include Krikri::Harvester
   attr_reader :opts
 
   ##
-  #
   # @param opts [Hash] options for the harvester
+  #   The options for this harvester should be an array of URIs because LoC is
+  #   specifying sets of records to be harvested.
+  #
   # @see .expected_opts
-  #
-  # The options for this harvester should be an array of URIs because LoC is
-  # specifying sets of records to be harvested.
-  #
   def initialize(opts = {})
     # https://www.loc.gov/collections/american-revolutionary-war-maps/ (1,251 items)
     # https://www.loc.gov/collections/civil-war-maps/ (1,707 items)
@@ -49,14 +46,13 @@ class LocHarvester < Krikri::Harvesters::ApiHarvester
     build_record( response )
   end
 
-
   private
 
   ##
   # @param doc [Hash] the partial item content included in the search result.
-  # This content does not include the item's id, only URIs to the various
-  # item pages. Aggregate all the URIs and select those that match the
-  # JSON-enabled view (www.loc.gov/item/<id>)
+  #   This content does not include the item's id, only URIs to the various
+  #   item pages. Aggregate all the URIs and select those that match the
+  #   JSON-enabled view (www.loc.gov/item/<id>)
   #
   # @return [Hash] the complete record
   def get_item(doc)
@@ -81,9 +77,10 @@ class LocHarvester < Krikri::Harvesters::ApiHarvester
   # @param response [Hash] a response from the LoC API
   #
   # @return [Integer] value of the number of records in the response
-    def get_count(response)
-      response['pagination']['of']
-    end
+  def get_count(response)
+    response['pagination']['of']
+  end
+
   ##
   # @param response [Hash] a response from the LoC API
   #
@@ -154,9 +151,7 @@ class LocHarvester < Krikri::Harvesters::ApiHarvester
   #
   # @param request_uri [#to_s] the base URI of the request
   # @param request_opts [Hash] options for the base URI, defaults to nil if
-  # none provided
-  #
-  # @return
+  #   none provided
   def request(request_uri, request_opts=nil)
     parsed_uri = URI(request_uri)
     # Coerce a scheme for the request URI if one not does exist
