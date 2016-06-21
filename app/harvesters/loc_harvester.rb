@@ -113,6 +113,8 @@ class LocHarvester < Krikri::Harvesters::ApiHarvester
           response = request(request_opts)
           docs = get_docs(response)
           break if docs.empty?
+          
+          require 'pry'; binding.pry
 
           # Queue #get_items threads
           threads = []
@@ -160,8 +162,8 @@ class LocHarvester < Krikri::Harvesters::ApiHarvester
     begin
       JSON.parse(RestClient.get(parsed_uri.to_s, request_opts))
     rescue => e
-      puts "ERROR: " + e.response
-      puts "When attempting to request " + parsed_uri.to_s
+      Krikri::Logger
+        .log(:error, "#{e.response}\n Failed request for #{parsed_uri.to_s}")
       # If unable to sucessfully parse the response then return nil
       nil
     end
