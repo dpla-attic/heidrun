@@ -6,14 +6,14 @@ describe CdlHarvester do
       expect(described_class.new)
         .to have_attributes(uri: 'https://solr.calisphere.org/solr/query',
                             name: 'cdl',
-                            opts: { 'params' => { 'q' => '*:*' } })
+                            opts: { 'params' => { 'q' => '-type_ss:dataset' } })
     end
 
     it 'allows override of CDL uri' do
       uri = 'http://example.org/mdl'
       expect(described_class.new(uri: uri))
         .to have_attributes(uri: uri,
-                            opts: { 'params' => { 'q' => '*:*' } })
+                            opts: { 'params' => { 'q' => '-type_ss:dataset' } })
     end
 
     it 'allows override of CDL params' do
@@ -34,7 +34,7 @@ describe CdlHarvester do
       expect(described_class.new(api: auth))
         .to have_attributes(uri: 'https://solr.calisphere.org/solr/query',
                             opts: {'X-Authentication-Token'=>'Mellon',
-                               'params' => { 'q' => '*:*' } }  )
+                               'params' => { 'q' => '-type_ss:dataset' } }  )
     end
   end
 end
