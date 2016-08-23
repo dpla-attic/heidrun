@@ -3,6 +3,8 @@
 # @see krikri::Harvester
 class LocHarvester < Krikri::Harvesters::ApiHarvester
   include Krikri::Harvester
+
+  JSON_PARAM = '?fo=json'.freeze
   
   # @!attribute [r] opts
   #   @return [Hash<Symbol, Object>] the options for the harvester
@@ -21,10 +23,13 @@ class LocHarvester < Krikri::Harvesters::ApiHarvester
   #
   # @see .expected_opts
   def initialize(opts = {})
-    opts[:name] ||= 'loc'
+    opts[:uri] = '' if opts[:api] # don't require a URI if we have api opts
+
+    opts[:name] ||= 'loc'.freeze
     opts[:api]  ||= {}
 
-    opts[:api][:uris] = Array.wrap(opts[:api][:uris])
+    opts[:api][:uris]          = Array.wrap(opts[:api][:uris])
+    opts[:api][:item_base_uri] = 'https://www.loc.gov/item/'.freeze
 
     @http = Krikri::AsyncUriGetter.new(opts: {follow_redirects:  true,
                                               inline_exceptions: true})
@@ -53,12 +58,18 @@ class LocHarvester < Krikri::Harvesters::ApiHarvester
     build_record(request(build_record_uri(identifier)))
   end
 
+  ##
+  # @see Harvester#record_ids
+  def record_ids
+    enumerate_uris.map { |u| u.split('/').last }.to_enum
+  end
+
   private
 
   ##
   # @private
   def build_record_uri(identifier)
-    opts[:item_base_uri] + identifier.to_s + '?fo=json'
+    RDF::URI(opts[:item_base_uri]) / identifier.to_s / JSON_PARAM
   end
 
   ##
@@ -105,36 +116,41 @@ class LocHarvester < Krikri::Harvesters::ApiHarvester
   ##
   # @return [Enumerator] an enumerator over the records
   def enumerate_records
+    enumerate_uris.lazy.map do |item_uri|
+      @http.add_request(uri: URI.parse(item_uri + JSON_PARAM))
+        .with_response do |item_response|
+        Krikri::Logger.log(:error, "#{response.status}: #{uri}") unless
+          item_response.status == 200
+        
+        parse_json(item_response.body)
+      end
+    end
+  end
+
+  ##
+  # @return [Enumerator] an enumerator over the record uris
+  def enumerate_uris
     Enumerator.new do |yielder|
       # For each of the sets
       opts[:uris].each do |uri|
         loop do
-          require 'pry'
-          binding.pry
           response = request(uri)
           batch    = get_docs(response)
 
+          next  if batch.nil?
           break if batch.empty?
           
           batch.each do |item|
             item_uri = Array.new([item['aka'], item['id'], item['url']])
                        .flatten.uniq.grep(/www.loc.gov\/item/).first
                        
-            next if item_uri.nil?
-
-            @http.add_request(uri: URI.parse(item_uri + '?fo=json'))
-              .with_response do |item_response|
-              Krikri::Logger.log(:error, "#{response.status}: #{uri}") unless
-                item_response.status == 200
-              
-              yielder << parse_json(item_response.body)
-            end
+            yielder << item_uri unless item_uri.nil?
           end
 
-          uri = next_options(response)
+          uri = next_options(response) or break
         end
       end
-    end
+    end   
   end
 
   ##
@@ -173,8 +189,7 @@ class LocHarvester < Krikri::Harvesters::ApiHarvester
       JSON.parse(response)
     rescue => e
       Krikri::Logger
-        .log(:error, "#{e.message}\n Failed request for #{response.to_s}")
-      # If unable to sucessfully parse the response then return nil
+        .log(:error, "Failed to parse response: #{e.message}")
       nil
     end
   end
