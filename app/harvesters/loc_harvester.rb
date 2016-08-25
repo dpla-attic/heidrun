@@ -4,7 +4,8 @@
 class LocHarvester < Krikri::Harvesters::ApiHarvester
   include Krikri::Harvester
 
-  JSON_PARAM = '?fo=json'.freeze
+  DEFAULT_THREAD_COUNT = 20.freeze
+  JSON_PARAM           = '?fo=json'.freeze
   
   # @!attribute [r] opts
   #   @return [Hash<Symbol, Object>] the options for the harvester
@@ -30,6 +31,7 @@ class LocHarvester < Krikri::Harvesters::ApiHarvester
 
     opts[:api][:uris]          = Array.wrap(opts[:api][:uris])
     opts[:api][:item_base_uri] = 'https://www.loc.gov/item/'.freeze
+    opts[:api][:threads]       = DEFAULT_THREAD_COUNT
 
     @http = Krikri::AsyncUriGetter.new(opts: {follow_redirects:  true,
                                               inline_exceptions: true})
@@ -116,13 +118,16 @@ class LocHarvester < Krikri::Harvesters::ApiHarvester
   ##
   # @return [Enumerator] an enumerator over the records
   def enumerate_records
-    enumerate_uris.lazy.map do |item_uri|
-      @http.add_request(uri: URI.parse(item_uri + JSON_PARAM))
-        .with_response do |item_response|
-        Krikri::Logger.log(:error, "#{response.status}: #{uri}") unless
-          item_response.status == 200
-        
-        parse_json(item_response.body)
+    Enumerator.new do |yielder|
+      enumerate_uris.lazy.each_slice(opts[:threads]).each do |uris|
+        uris.each do |item_uri|
+          @http.add_request(uri: URI.parse(item_uri + JSON_PARAM))
+            .with_response do |item_response|
+            Krikri::Logger.log(:error, "#{response.status}: #{uri}") unless
+              item_response.status == 200
+            yielder << parse_json(item_response.body)
+          end
+        end
       end
     end
   end
