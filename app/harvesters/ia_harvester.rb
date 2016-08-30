@@ -111,6 +111,7 @@ class IaHarvester
   ##
   # @see Krikri::Harvester#record_ids
   def record_ids
+    puts 'IA Thread Counts:'
     Enumerator.new do |en|
       cursor = nil
       loop do
@@ -124,6 +125,7 @@ class IaHarvester
             # we can't really continue
             fail msg
           end
+          puts Thread.list.count
 
           result = JSON.parse(response.body)
 
