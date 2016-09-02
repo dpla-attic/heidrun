@@ -26,7 +26,6 @@ RSpec.configure do |config|
   config.mock_with :rspec
 
   config.include FactoryGirl::Syntax::Methods
-  config.include Krikri::Spec::Matchers
 
   config.use_transactional_fixtures = false
   config.infer_base_class_for_anonymous_controllers = false
