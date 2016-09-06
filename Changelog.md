@@ -1,3 +1,12 @@
+v0.8.1 - 2016 Sep 06
+---
+* Add LoC Harvester 
+* Upgrade to Krikri 0.14
+* Update the solr schema with the krikri generator
+* Default query for CDL harvester now excludes datasets
+* Add krikri-spec gem to introduces the shared examples and matchers
+* Pin gems to tiny versions currently running in production
+
 v0.8.0 - 2016 Mar 21
 ---
 * Upgrade to Krikri 0.11 or higher

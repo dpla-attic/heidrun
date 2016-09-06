@@ -24,8 +24,8 @@ class CdlHarvester < Krikri::Harvesters::ApiHarvester
     opts[:uri] ||= 'https://solr.calisphere.org/solr/query'
     opts[:name] ||= 'cdl'
     super
-    # Default query parameter is '*:*'' to return all items in the Solr index
-    @opts['params'] ||= { 'q' => '*:*' }
+    # Default query parameter excludes dataset records
+    @opts['params'] ||= { 'q' => '-type_ss:dataset' }
   end
 
   ##
