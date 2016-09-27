@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 gem 'rails', '~> 4.1.11'
 gem 'rake',  '~> 11.0.0'
 
-gem 'krikri', '~> 0.14', '>=0.14.0'
+gem 'krikri', :git => 'https://github.com/dpla/KriKri.git', :branch => 'fix/online-text'
 
 gem 'sqlite3', '~> 1.3.11'
 gem 'sass-rails', '~> 4.0.3'
