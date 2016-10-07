@@ -43,3 +43,15 @@ gem 'jettywrapper', '~> 2.0.3', group: :development
 gem 'devise', '3.4.1'
 gem 'pg', '0.18.2'
 gem 'unicorn', '4.8.3'
+
+# Gems from krikri (@see KriKri/krikri.gemspec)
+# In krikri, these gems are pinned to major or minor verions.
+# Here, they are pinned to tiny versions so we can manage them more
+# intentionally.
+
+gem 'audumbla', '~> 0.2.1'
+gem 'rest-client', '~> 2.0.0'
+gem 'text', '~> 1.3'
+gem 'jsonpath', '~> 0.5.8'
+gem 'resque', '~> 1.26.0'
+gem 'timecop', '~> 0.8.1'
