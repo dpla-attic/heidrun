@@ -1,3 +1,7 @@
+v0.8.2 - 2016 Oct 17
+---
+* Pin gems from Krikri to tiny versions
+
 v0.8.1 - 2016 Sep 06
 ---
 * Add LoC Harvester 
