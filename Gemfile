@@ -55,3 +55,4 @@ gem 'text', '~> 1.3'
 gem 'jsonpath', '~> 0.5.8'
 gem 'resque', '~> 1.26.0'
 gem 'timecop', '~> 0.8.1'
+gem 'celluloid', '= 0.16.0'  # 0.16.1 yanked

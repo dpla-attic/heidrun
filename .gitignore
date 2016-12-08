@@ -15,8 +15,6 @@
 /log/*.log
 /tmp
 
-Gemfile.lock
-
 jetty
 vendor/mappings
 
